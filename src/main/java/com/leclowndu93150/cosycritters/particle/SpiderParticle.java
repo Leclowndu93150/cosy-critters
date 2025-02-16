@@ -1,5 +1,6 @@
 package com.leclowndu93150.cosycritters.particle;
 
+import com.leclowndu93150.cosycritters.util.FacingCameraMode;
 import com.leclowndu93150.cosycritters.util.RotationOverride;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;

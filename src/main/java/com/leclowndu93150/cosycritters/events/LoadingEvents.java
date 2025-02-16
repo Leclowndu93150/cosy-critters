@@ -6,11 +6,12 @@ import com.leclowndu93150.cosycritters.particle.HatManParticle;
 import com.leclowndu93150.cosycritters.particle.MothParticle;
 import com.leclowndu93150.cosycritters.particle.SpiderParticle;
 import com.leclowndu93150.cosycritters.registry.ParticleRegistry;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = CosyCritters.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = CosyCritters.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class LoadingEvents {
 
     @SubscribeEvent

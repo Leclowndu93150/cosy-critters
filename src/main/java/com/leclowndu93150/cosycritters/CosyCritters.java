@@ -19,6 +19,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLLoader;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -37,7 +38,9 @@ public class CosyCritters {
 
     public CosyCritters() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        ParticleRegistry.PARTICLE_TYPES.register(modEventBus);
+        if(FMLLoader.getDist().isClient()){
+            ParticleRegistry.PARTICLE_TYPES.register(modEventBus);
+        }
     }
 
     public static boolean isDayButNotBroken(Level level) {
