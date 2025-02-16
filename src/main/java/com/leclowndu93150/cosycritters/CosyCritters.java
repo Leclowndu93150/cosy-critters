@@ -38,9 +38,7 @@ public class CosyCritters {
 
     public CosyCritters() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        if(FMLLoader.getDist().isClient()){
             ParticleRegistry.PARTICLE_TYPES.register(modEventBus);
-        }
     }
 
     public static boolean isDayButNotBroken(Level level) {
