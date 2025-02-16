@@ -9,11 +9,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -79,7 +81,12 @@ public class CosyCritters {
                 && level.getBlockState(blockPos.above()).isAir()
                 && !Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), 10)) {
             Vec3 pos = blockPos.getCenter();
-            pos = state.getCollisionShape(level, blockPos).clip(pos.add(0, 2, 0), pos.add(0, -0.6, 0), blockPos).getLocation();
+            VoxelShape shape = state.getCollisionShape(level, blockPos);
+            if (shape.isEmpty()) {
+                // Fallback for passable foliage - use full block bounds
+                shape = Block.box(0, 0, 0, 16, 16, 16);
+            }
+            pos = shape.clip(pos.add(0, 2, 0), pos.add(0, -0.6, 0), blockPos).getLocation();
             Vec3 spawnFrom = pos.add(level.random.nextInt(10) - 5, level.random.nextInt(5), level.random.nextInt(10) - 5);
             if (level.clip(new ClipContext(spawnFrom, pos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getType().equals(HitResult.Type.MISS)) {
                 level.addParticle(ParticleRegistry.BIRD.get(), spawnFrom.x, spawnFrom.y, spawnFrom.z, pos.x, pos.y, pos.z);
