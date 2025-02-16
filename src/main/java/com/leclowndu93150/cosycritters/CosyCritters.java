@@ -1,17 +1,11 @@
 package com.leclowndu93150.cosycritters;
 
-import com.leclowndu93150.cosycritters.particle.BirdParticle;
-import com.leclowndu93150.cosycritters.particle.HatManParticle;
 import com.leclowndu93150.cosycritters.particle.MothParticle;
-import com.leclowndu93150.cosycritters.particle.SpiderParticle;
 import com.leclowndu93150.cosycritters.registry.ParticleRegistry;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -22,14 +16,8 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -41,7 +29,7 @@ public class CosyCritters {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static boolean wasSleeping = false;
     public static int birdCount = 0;
-    public static int maxBirdCount = 50;
+    public static int maxBirdCount = 10;
     public static int mothCount = 0;
     public static int maxMothCount = 10;
     public static ArrayList<MothParticle> moths = new ArrayList<>();
