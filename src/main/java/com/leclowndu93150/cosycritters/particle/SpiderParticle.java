@@ -61,7 +61,7 @@ public class SpiderParticle extends TextureSheetParticle implements RotationOver
         }
         // feel forwards for a block face to crawl onto
         Vec3 to = from.add(new Vec3(xd, yd, zd).normalize().multiply(quadSize / 2, quadSize / 2, quadSize / 2));
-        BlockHitResult hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, Minecraft.getInstance().player));
+        BlockHitResult hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, null));
         if (hitResult.getType().equals(HitResult.Type.BLOCK)) {
             // reorient
             Direction oldDirection = direction;
