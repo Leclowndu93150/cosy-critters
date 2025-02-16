@@ -5,23 +5,24 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
-@EventBusSubscriber(modid = CosyCritters.MODID, bus = EventBusSubscriber.Bus.GAME)
+@Mod.EventBusSubscriber(modid = CosyCritters.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class InGameEvents {
 
     @SubscribeEvent
-    private static void onJoin(ClientPlayerNetworkEvent.LoggingIn event) {
+    public static void onJoin(ClientPlayerNetworkEvent.LoggingIn event) {
         CosyCritters.birdCount = 0;
         CosyCritters.mothCount = 0;
     }
 
     @SubscribeEvent
-    private static void onClientTick(ClientTickEvent.Pre event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        if(event.phase != TickEvent.Phase.START) return;
         if (Minecraft.getInstance().player != null) {
             CosyCritters.tickHatManSpawnConditions(Minecraft.getInstance());
         }
@@ -39,5 +40,4 @@ public class InGameEvents {
                 });
         dispatcher.register(cmd);
     }
-
 }

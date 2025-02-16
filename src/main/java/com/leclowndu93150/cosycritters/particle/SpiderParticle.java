@@ -2,6 +2,7 @@ package com.leclowndu93150.cosycritters.particle;
 
 import com.leclowndu93150.cosycritters.util.RotationOverride;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.BlockPos;
@@ -12,9 +13,8 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 
@@ -61,7 +61,7 @@ public class SpiderParticle extends TextureSheetParticle implements RotationOver
         }
         // feel forwards for a block face to crawl onto
         Vec3 to = from.add(new Vec3(xd, yd, zd).normalize().multiply(quadSize / 2, quadSize / 2, quadSize / 2));
-        BlockHitResult hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, CollisionContext.empty()));
+        BlockHitResult hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, Minecraft.getInstance().player));
         if (hitResult.getType().equals(HitResult.Type.BLOCK)) {
             // reorient
             Direction oldDirection = direction;
@@ -108,12 +108,12 @@ public class SpiderParticle extends TextureSheetParticle implements RotationOver
         } else {
             // feel down, are we floating?
             to = from.add(new Vec3(direction.step()).multiply(0.2, 0.2, 0.2));
-            hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, CollisionContext.empty()));
+            hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, null));
             if (hitResult.getType().equals(HitResult.Type.MISS)) {
                 // feel down + backwards for a ledge that we've just crawled off
                 to = from.add(new Vec3(direction.step()).multiply(0.5, 0.5, 0.5))
                         .add(new Vec3(-xd, -yd, -zd).normalize().multiply(0.5, 0.5, 0.5));
-                hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, CollisionContext.empty()));
+                hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, null));
                 if (hitResult.getType().equals(HitResult.Type.BLOCK)) {
                     if (direction != hitResult.getDirection().getOpposite()) {
                         // reorient
@@ -199,7 +199,7 @@ public class SpiderParticle extends TextureSheetParticle implements RotationOver
     }
 
     @Override
-    public void setParticleRotation(SingleQuadParticle.FacingCameraMode facingCameraMode, Quaternionf quaternionf, Camera camera, float tickPercent) {
+    public void setParticleRotation(FacingCameraMode facingCameraMode, Quaternionf quaternionf, Camera camera, float tickPercent) {
         switch (direction) {
             case DOWN -> {
                 quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, -1, 0, 0)));

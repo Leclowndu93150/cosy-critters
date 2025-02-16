@@ -14,10 +14,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -34,7 +33,8 @@ public class CosyCritters {
     public static int maxMothCount = 10;
     public static ArrayList<MothParticle> moths = new ArrayList<>();
 
-    public CosyCritters(IEventBus modEventBus, ModContainer modContainer) {
+    public CosyCritters() {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ParticleRegistry.PARTICLE_TYPES.register(modEventBus);
     }
 
@@ -81,7 +81,7 @@ public class CosyCritters {
             Vec3 pos = blockPos.getCenter();
             pos = state.getCollisionShape(level, blockPos).clip(pos.add(0, 2, 0), pos.add(0, -0.6, 0), blockPos).getLocation();
             Vec3 spawnFrom = pos.add(level.random.nextInt(10) - 5, level.random.nextInt(5), level.random.nextInt(10) - 5);
-            if (level.clip(new ClipContext(spawnFrom, pos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getType().equals(HitResult.Type.MISS)) {
+            if (level.clip(new ClipContext(spawnFrom, pos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getType().equals(HitResult.Type.MISS)) {
                 level.addParticle(ParticleRegistry.BIRD.get(), spawnFrom.x, spawnFrom.y, spawnFrom.z, pos.x, pos.y, pos.z);
             }
         }

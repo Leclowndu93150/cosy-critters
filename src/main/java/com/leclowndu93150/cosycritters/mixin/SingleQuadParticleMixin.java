@@ -10,18 +10,26 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-
 @Mixin(SingleQuadParticle.class)
 public abstract class SingleQuadParticleMixin extends Particle implements RotationOverride {
     protected SingleQuadParticleMixin(ClientLevel level, double x, double y, double z) {
         super(level, x, y, z);
     }
+
     @Redirect(
             method = "render",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/client/particle/SingleQuadParticle$FacingCameraMode;setRotation(Lorg/joml/Quaternionf;Lnet/minecraft/client/Camera;F)V")
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/Camera;rotation()Lorg/joml/Quaternionf;"
+            )
     )
-    private void setRotation(SingleQuadParticle.FacingCameraMode facingCameraMode, Quaternionf quaternionf, Camera camera, float tickPercent) {
-        setParticleRotation(facingCameraMode, quaternionf, camera, tickPercent);
+    private Quaternionf redirectRotation(Camera camera) {
+        Quaternionf quaternionf = new Quaternionf();
+        if (this.roll == 0.0F) {
+            setParticleRotation(RotationOverride.FacingCameraMode.ROTATE_Y, quaternionf, camera, 0.0f); // We'll need a different way to get partialTicks
+        } else {
+            quaternionf.set(camera.rotation());
+        }
+        return quaternionf;
     }
 }

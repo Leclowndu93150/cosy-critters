@@ -4,12 +4,12 @@ import com.leclowndu93150.cosycritters.CosyCritters;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseTorchBlock;
 import net.minecraft.world.level.block.LanternBlock;
+import net.minecraft.world.level.block.TorchBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 
-@Mixin({BaseTorchBlock.class, LanternBlock.class})
+@Mixin({TorchBlock.class, LanternBlock.class})
 public class MothSpawningBlockMixin extends BlockMixin {
 
     @Override

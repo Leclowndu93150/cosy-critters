@@ -1,6 +1,7 @@
 package com.leclowndu93150.cosycritters.particle;
 
 import com.leclowndu93150.cosycritters.CosyCritters;
+import com.leclowndu93150.cosycritters.util.QuadBullshit;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -9,14 +10,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.AxisAngle4d;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public class MothParticle extends TextureSheetParticle {
+public class MothParticle extends QuadBullshit {
 
     private final Vec3 targetLamp;
 
