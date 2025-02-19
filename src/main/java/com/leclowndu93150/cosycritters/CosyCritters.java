@@ -6,10 +6,14 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -36,9 +40,13 @@ public class CosyCritters {
     public static int maxMothCount = 10;
     public static ArrayList<MothParticle> moths = new ArrayList<>();
 
+    public static final TagKey<Block> SPIDER_SPAWNABLE = TagKey.create(Registries.BLOCK,
+            new ResourceLocation(CosyCritters.MODID, "spider_spawnable"));
+
     public CosyCritters() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-            ParticleRegistry.PARTICLE_TYPES.register(modEventBus);
+        ParticleRegistry.PARTICLE_TYPES.register(modEventBus);
+        Config.register();
     }
 
     public static boolean isDayButNotBroken(Level level) {
@@ -46,6 +54,7 @@ public class CosyCritters {
     }
 
     public static void tickHatManSpawnConditions(Minecraft minecraft) {
+        if (!Config.enableHatMan.get()) return;
         if (minecraft.level.dimensionType().moonPhase(minecraft.level.dayTime()) == 4) {
             if (minecraft.player.isSleeping()) {
                 if (!wasSleeping) {
@@ -77,8 +86,9 @@ public class CosyCritters {
     }
 
     public static void trySpawnBird(BlockState state, Level level, BlockPos blockPos) {
+        if (!Config.enableBirds.get()) return;
         if (isDayButNotBroken(level)
-                && birdCount < maxBirdCount
+                && birdCount < Config.maxBirds.get()
                 && level.getBlockState(blockPos.above()).isAir()
                 && !Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), 10)) {
             Vec3 pos = blockPos.getCenter();
@@ -96,21 +106,33 @@ public class CosyCritters {
     }
 
     public static void trySpawnMoth(Level level, BlockPos blockPos) {
+        if (!Config.enableMoths.get()) return;
         if (!isDayButNotBroken(level)
-                && mothCount < maxMothCount
+                && mothCount < Config.maxMoths.get()
                 && level.canSeeSky(blockPos)) {
             level.addParticle(ParticleRegistry.MOTH.get(), blockPos.getX(), blockPos.getY(), blockPos.getZ(), 0, 0, 0);
         }
     }
 
     public static void trySpawnSpider(Level level, BlockPos blockPos) {
+        if (!level.isClientSide()) return;
+        if (!Config.enableSpiders.get()) return;
         if (Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), 2)) return;
+
         Direction direction = Direction.getRandom(level.random);
         blockPos = blockPos.relative(direction);
         BlockState state = level.getBlockState(blockPos);
+
         if (state.isFaceSturdy(level, blockPos, direction.getOpposite())) {
-            final Vec3 spawnPos = blockPos.getCenter().add(new Vec3(direction.step()).multiply(-0.6f, -0.6f, -0.6f));
-            level.addParticle(ParticleRegistry.SPIDER.get(), spawnPos.x, spawnPos.y, spawnPos.z, direction.get3DDataValue(), 0, 0);
+            if(level.getBlockState(blockPos.above()).is(Blocks.COBWEB)){
+                final Vec3 spawnPos = blockPos.getCenter().add(new Vec3(direction.step()).multiply(-0.6f, -0.6f, -0.6f));
+                level.addParticle(ParticleRegistry.SPIDER.get(), spawnPos.x, spawnPos.y, spawnPos.z, direction.get3DDataValue(), 0, 0);
+            } else {
+                Direction randomOffset = Direction.Plane.HORIZONTAL.getRandomDirection(level.random);
+                final Vec3 spawnPos = blockPos.getCenter().add(new Vec3(direction.step()).multiply(-0.6f, -0.6f, -0.6f))
+                        .add(new Vec3(randomOffset.step()).multiply(0.5f, 0, 0.5f));
+                level.addParticle(ParticleRegistry.SPIDER.get(), spawnPos.x, spawnPos.y, spawnPos.z, direction.get3DDataValue(), 0, 0);
+            }
         }
     }
 }

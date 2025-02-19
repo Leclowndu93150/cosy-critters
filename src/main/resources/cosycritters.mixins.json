@@ -10,8 +10,7 @@
     "BirdSpawningBlockMixin",
     "BlockMixin",
     "BlocksThatOverrideThePreviousMixin",
-    "MothSpawningBlockMixin",
-    "WebBlockMixin"
+    "MothSpawningBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1
