@@ -8,8 +8,7 @@
     "BirdSpawningBlockMixin",
     "BlockMixin",
     "BlocksThatOverrideThePreviousMixin",
-    "MothSpawningBlockMixin",
-    "WebBlockMixin"
+    "MothSpawningBlockMixin"
   ],
   "client": [
   ],
