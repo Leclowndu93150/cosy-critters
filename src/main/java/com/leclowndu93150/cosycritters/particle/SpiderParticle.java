@@ -2,6 +2,7 @@ package com.leclowndu93150.cosycritters.particle;
 
 import com.leclowndu93150.cosycritters.util.FacingCameraMode;
 import com.leclowndu93150.cosycritters.util.RotationOverride;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -18,8 +19,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
-public class SpiderParticle extends TextureSheetParticle implements RotationOverride {
+public class SpiderParticle extends TextureSheetParticle {
 
     boolean clockwise;
     BlockPos blockPos;
@@ -200,32 +202,67 @@ public class SpiderParticle extends TextureSheetParticle implements RotationOver
     }
 
     @Override
-    public void setParticleRotation(FacingCameraMode facingCameraMode, Quaternionf quaternionf, Camera camera, float tickPercent) {
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
+        Quaternionf quaternionf = new Quaternionf();
+
         switch (direction) {
-            case DOWN -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, -1, 0, 0)));
-            }
+            case DOWN -> quaternionf.rotateX(-Mth.HALF_PI);
             case UP -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 1, 0, 0)));
+                quaternionf.rotateX(Mth.HALF_PI);
                 quaternionf.rotateZ(Mth.HALF_PI);
             }
-            case NORTH -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, 0, -1)));
-            }
+            case NORTH -> quaternionf.rotateZ(-Mth.HALF_PI);
             case SOUTH -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.PI, 0, 1, 0)));
-                // up/down & east/west are just the inverse of each other why is south like this
-                // i feel like theres something obvious that im completely missing
+                quaternionf.rotateY(Mth.PI);
+                quaternionf.rotateZ(-Mth.HALF_PI);
             }
             case WEST -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, 1, 0)));
+                quaternionf.rotateY(Mth.HALF_PI);
                 quaternionf.rotateZ(Mth.PI);
             }
             case EAST -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, -1, 0)));
+                quaternionf.rotateY(-Mth.HALF_PI);
                 quaternionf.rotateZ(Mth.HALF_PI);
             }
         }
+
+        if (this.roll != 0.0F) {
+            quaternionf.rotateZ(Mth.lerp(partialTicks, this.oRoll, this.roll));
+        }
+
+        Vec3 vec3 = renderInfo.getPosition();
+        float f = (float)(Mth.lerp(partialTicks, this.xo, this.x) - vec3.x());
+        float f1 = (float)(Mth.lerp(partialTicks, this.yo, this.y) - vec3.y());
+        float f2 = (float)(Mth.lerp(partialTicks, this.zo, this.z) - vec3.z());
+
+        renderRotatedQuad(buffer, quaternionf, f, f1, f2, partialTicks);
+    }
+
+    public void renderRotatedQuad(VertexConsumer vertexConsumer, Quaternionf quaternion, float x, float y, float z, float tickPercentage) {
+        quaternion.rotateY(Mth.PI);
+        float quadSize = this.getQuadSize(tickPercentage);
+        float u0 = this.getU0();
+        float u1 = this.getU1();
+        float v0 = this.getV0();
+        float v1 = this.getV1();
+        int lightColor = this.getLightColor(tickPercentage);
+
+        Vector3f[] vector3fs = new Vector3f[]{
+                new Vector3f(-1.0F, -1.0F, 0.0F),
+                new Vector3f(-1.0F, 1.0F, 0.0F),
+                new Vector3f(1.0F, 1.0F, 0.0F),
+                new Vector3f(1.0F, -1.0F, 0.0F)};
+
+        for(int k = 0; k < 4; ++k) {
+            Vector3f vector3f = vector3fs[k];
+            vector3f.rotate(quaternion);
+            vector3f.mul(quadSize);
+            vector3f.add(x, y, z);
+        }
+        vertexConsumer.vertex((double)vector3fs[0].x(), (double)vector3fs[0].y(), (double)vector3fs[0].z()).uv(u1, v1).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
+        vertexConsumer.vertex((double)vector3fs[1].x(), (double)vector3fs[1].y(), (double)vector3fs[1].z()).uv(u1, v0).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
+        vertexConsumer.vertex((double)vector3fs[2].x(), (double)vector3fs[2].y(), (double)vector3fs[2].z()).uv(u0, v0).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
+        vertexConsumer.vertex((double)vector3fs[3].x(), (double)vector3fs[3].y(), (double)vector3fs[3].z()).uv(u0, v1).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
     }
 
     @Override

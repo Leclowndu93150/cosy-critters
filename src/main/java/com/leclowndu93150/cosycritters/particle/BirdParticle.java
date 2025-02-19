@@ -11,7 +11,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BirdParticle extends TextureSheetParticle {
+public class BirdParticle extends BaseParticle {
 
     int spawnAnimationLength = 40;
     int spawnAnimationTime = spawnAnimationLength;

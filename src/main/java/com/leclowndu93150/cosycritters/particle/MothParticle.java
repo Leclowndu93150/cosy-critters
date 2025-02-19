@@ -1,7 +1,6 @@
 package com.leclowndu93150.cosycritters.particle;
 
 import com.leclowndu93150.cosycritters.CosyCritters;
-import com.leclowndu93150.cosycritters.util.QuadBullshit;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -17,7 +16,7 @@ import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public class MothParticle extends QuadBullshit {
+public class MothParticle extends BaseParticle {
 
     private final Vec3 targetLamp;
 
