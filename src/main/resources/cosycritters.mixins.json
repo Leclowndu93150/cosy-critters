@@ -12,7 +12,6 @@
     "WebBlockMixin"
   ],
   "client": [
-    "SingleQuadParticleMixin"
   ],
   "injectors": {
     "defaultRequire": 1

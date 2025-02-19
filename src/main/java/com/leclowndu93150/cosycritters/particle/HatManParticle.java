@@ -7,7 +7,7 @@ import net.minecraft.core.particles.SimpleParticleType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-public class HatManParticle extends TextureSheetParticle {
+public class HatManParticle extends BaseParticle {
 
     private HatManParticle(ClientLevel level, double x, double y, double z, SpriteSet spriteSet) {
         super(level, x, y, z);

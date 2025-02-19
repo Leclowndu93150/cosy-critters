@@ -16,7 +16,7 @@ import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public class MothParticle extends TextureSheetParticle {
+public class MothParticle extends BaseParticle {
 
     private final Vec3 targetLamp;
 

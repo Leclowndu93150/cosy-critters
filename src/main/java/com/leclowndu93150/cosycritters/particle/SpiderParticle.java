@@ -1,6 +1,7 @@
 package com.leclowndu93150.cosycritters.particle;
 
 import com.leclowndu93150.cosycritters.util.RotationOverride;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -18,7 +19,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 
-public class SpiderParticle extends TextureSheetParticle implements RotationOverride {
+public class SpiderParticle extends TextureSheetParticle{
 
     boolean clockwise;
     BlockPos blockPos;
@@ -199,32 +200,35 @@ public class SpiderParticle extends TextureSheetParticle implements RotationOver
     }
 
     @Override
-    public void setParticleRotation(SingleQuadParticle.FacingCameraMode facingCameraMode, Quaternionf quaternionf, Camera camera, float tickPercent) {
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
+        Quaternionf quaternionf = new Quaternionf();
+
         switch (direction) {
-            case DOWN -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, -1, 0, 0)));
-            }
+            case DOWN -> quaternionf.rotateX(-Mth.HALF_PI);
             case UP -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 1, 0, 0)));
+                quaternionf.rotateX(Mth.HALF_PI);
                 quaternionf.rotateZ(Mth.HALF_PI);
             }
-            case NORTH -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, 0, -1)));
-            }
+            case NORTH -> quaternionf.rotateZ(-Mth.HALF_PI);
             case SOUTH -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.PI, 0, 1, 0)));
-                // up/down & east/west are just the inverse of each other why is south like this
-                // i feel like theres something obvious that im completely missing
+                quaternionf.rotateY(Mth.PI);
+                quaternionf.rotateZ(-Mth.HALF_PI);
             }
             case WEST -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, 1, 0)));
+                quaternionf.rotateY(Mth.HALF_PI);
                 quaternionf.rotateZ(Mth.PI);
             }
             case EAST -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, -1, 0)));
+                quaternionf.rotateY(-Mth.HALF_PI);
                 quaternionf.rotateZ(Mth.HALF_PI);
             }
         }
+
+        if (this.roll != 0.0F) {
+            quaternionf.rotateZ(Mth.lerp(partialTicks, this.oRoll, this.roll));
+        }
+
+        renderRotatedQuad(buffer, renderInfo, quaternionf, partialTicks);
     }
 
     @Override
