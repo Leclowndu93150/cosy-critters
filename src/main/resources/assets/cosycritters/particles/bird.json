@@ -1,6 +1,12 @@
 {
   "textures": [
-    "cosycritters:bird_flying_left",
-    "cosycritters:bird_flying_right"
+    "cosycritters:crow_left",
+    "cosycritters:crow_right",
+    "cosycritters:crow_flying_left_0",
+    "cosycritters:crow_flying_left_1",
+    "cosycritters:crow_flying_right_0",
+    "cosycritters:crow_flying_right_1",
+    "cosycritters:crow_checking_left",
+    "cosycritters:crow_checking_right"
   ]
 }

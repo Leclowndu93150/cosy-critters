@@ -1,26 +1,18 @@
 package com.leclowndu93150.cosycritters.particle;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.util.Mth;
-import org.joml.Quaternionf;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
-public abstract class BaseParticle extends TextureSheetParticle {
+public abstract class BaseParticle extends SingleQuadParticle {
 
-    protected BaseParticle(ClientLevel level, double x, double y, double z) {
-        super(level, x, y, z);
+    protected BaseParticle(ClientLevel level, double x, double y, double z, TextureAtlasSprite sprite) {
+        super(level, x, y, z, sprite);
+        this.hasPhysics = false;
     }
 
     @Override
-    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
-        Quaternionf quaternionf = new Quaternionf();
-        getFacingCameraMode().setRotation(quaternionf, renderInfo, partialTicks);
-        if (this.roll != 0.0F) {
-            quaternionf.rotateZ(Mth.lerp(partialTicks, this.oRoll, this.roll));
-        }
-        renderRotatedQuad(buffer, renderInfo, quaternionf, partialTicks);
+    protected Layer getLayer() {
+        return Layer.OPAQUE;
     }
-
 }

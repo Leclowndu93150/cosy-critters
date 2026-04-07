@@ -10,7 +10,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 
-@EventBusSubscriber(modid = CosyCritters.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = CosyCritters.MODID)
 public class LoadingEvents {
 
     @SubscribeEvent
@@ -20,5 +20,4 @@ public class LoadingEvents {
         event.registerSpriteSet(ParticleRegistry.MOTH.get(), MothParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.SPIDER.get(), SpiderParticle.Provider::new);
     }
-
 }
